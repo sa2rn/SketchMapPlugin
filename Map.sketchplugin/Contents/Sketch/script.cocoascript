@@ -1,0 +1,52 @@
+var onRun = function(context) {
+    var selection = context.selection;
+    var layers = [];
+
+    for (var i = 0; i < [selection count]; i++) {
+        var layer = selection[i];
+            if ([layer isKindOfClass:MSShapeGroup]) {
+            layers.push(selection[i]);
+        }
+    }
+
+    if (layers.length == 0) {
+        return;
+    }
+
+    var queryInput = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 200, 24)];
+    [queryInput setStringValue:"Enter address or coordinates"];
+
+    var alert = [[NSAlert alloc] init];
+    [alert setMessageText:"Google map"];
+    [alert addButtonWithTitle:"OK"];
+    [alert addButtonWithTitle:"Cancel"];
+    [alert setAccessoryView:queryInput];
+
+    var button = [alert runModal];
+
+    if (button != NSAlertFirstButtonReturn) {
+        return;
+    }
+
+    var baseUrl = "https://maps.googleapis.com/maps/api/staticmap?center=%@&scale=2&zoom=%@&size=%@x%@&maptype=%@";
+    var query = [queryInput stringValue];
+    var zoom = 13;
+    var maptype = "roadmap";
+
+    for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        var width = Math.min(640, [[layer frame] width]);
+        var height = Math.min(640, [[layer frame] height]);
+        var fill = [[layer style] fills].firstObject();
+        var urlString = [[NSString stringWithFormat:baseUrl, query, zoom, width, height, maptype] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        log(urlString);
+        var url = [[NSURL alloc] initWithString:urlString];
+        var Image = [[NSImage alloc] initWithContentsOfURL:url];
+
+        if ([Image isValid]) {
+            [fill setFillType:4];
+            [fill setPatternFillType:1];
+            [fill setPatternImage:Image];
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Map",
+  "description": "Generate map",
+  "author": "Stepanenko Alexander",
+  "authorEmail": "sa2rn.set@gmail.com",
+  "version": "1.0",
+  "identifier": "com.sa2rn.sketch.map",
+  "compatibleVersion": 3,
+  "commands": [
+    {
+      "script": "script.cocoascript",
+      "handler": "onRun",
+      "shortcut": "",
+      "name": "Map",
+      "identifier": "map"
+    }
+  ],
+  "menu": {
+    "isRoot": true,
+    "items": [
+      "map"
+    ]
+  }
+}
